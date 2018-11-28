@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridCell : MonoBehaviour {
+public class GridCell : MonoBehaviour
+{
+	// Список клеток, достижимых из данной
+	public GridCell[] m_neighbours;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	// Объект, находящийся в данной клетке
+	public GameObject m_object;
 }

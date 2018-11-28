@@ -16,6 +16,7 @@ public class TrumpCharacterMovement : MonoBehaviour
 	{
 		// m_animation = GetComponent<Animation>();
 		controller = transform.GetComponent<CharacterController>();
+		Debug.Log(controller.minMoveDistance);
 	}
 
 	// Update is called once per frame
