@@ -14,7 +14,7 @@ public class TrumpCharacterMovement : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		m_animation = GetComponent<Animation>();
+		// m_animation = GetComponent<Animation>();
 		controller = transform.GetComponent<CharacterController>();
 	}
 
@@ -46,12 +46,12 @@ public class TrumpCharacterMovement : MonoBehaviour
 					controller.SimpleMove(transform.forward * speed);
 				}
 				transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-				m_animation.Play("Walk");
+				// m_animation.Play("Walk");
 			}
 			else if (Input.GetKey("s"))
 			{
 				transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
-				m_animation.Play("Walk");
+				//m_animation.Play("Walk");
 				if (Input.GetKey(KeyCode.LeftShift))
 				{
 					controller.SimpleMove(transform.forward * speed * 2);
@@ -64,7 +64,7 @@ public class TrumpCharacterMovement : MonoBehaviour
 			else if (Input.GetKey("a"))
 			{
 				transform.rotation = Quaternion.Euler(new Vector3(0, 270, 0));
-				m_animation.Play("Walk");
+				//m_animation.Play("Walk");
 				if (Input.GetKey(KeyCode.LeftShift))
 				{
 					controller.SimpleMove(transform.forward * speed * 2);
@@ -77,7 +77,7 @@ public class TrumpCharacterMovement : MonoBehaviour
 			else if (Input.GetKey("d"))
 			{
 				transform.rotation = Quaternion.Euler(new Vector3(0, 90, 0));
-				m_animation.Play("Walk");
+				//m_animation.Play("Walk");
 				if (Input.GetKey(KeyCode.LeftShift))
 				{
 					controller.SimpleMove(transform.forward * speed * 2);
@@ -89,7 +89,7 @@ public class TrumpCharacterMovement : MonoBehaviour
 			}
 			else
 			{
-				m_animation.Play("Idle");
+				// m_animation.Play("Idle");
 			}
 		}
 		else

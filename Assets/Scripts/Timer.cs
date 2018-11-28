@@ -11,7 +11,7 @@ public class Timer : MonoBehaviour
 	void Start()
 	{
 		m_text = GetComponent<Text>();
-		m_seconds = 120.0f;
+		m_seconds = 45.0f;
 	}
 
 	void Update()
