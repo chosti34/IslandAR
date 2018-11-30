@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrumpCharacterMovement : MonoBehaviour
+public class Pirate : MonoBehaviour
 {
 	private Animation m_animation;
 
 	float speed = 7;
 	float gravity = 15;
+
 	CharacterController controller;
 	Vector3 moveDirection = Vector3.zero;
 
@@ -108,6 +109,14 @@ public class TrumpCharacterMovement : MonoBehaviour
 					controller.Move(relative * Time.deltaTime * speed);
 				}
 			}
+		}
+	}
+
+	void OnTriggerEnter(Collider other)
+	{
+		if (other.tag == "Chest")
+		{
+			Destroy(other.gameObject);
 		}
 	}
 }

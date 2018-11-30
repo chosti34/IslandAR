@@ -46,17 +46,8 @@ public class GameController : MonoBehaviour
 
 		foreach (int index in indices)
 		{
-			Vector3 position = new Vector3(
-				m_grid[index].transform.position.x,
-				m_grid[index].transform.position.y,
-				m_grid[index].transform.position.z
-			);
-			Vector3 rotation = new Vector3(
-				0.0f,
-				Random.Range(-360.0f, 360.0f),
-				0.0f
-			);
-			GameObject chest = Instantiate(m_chestPrefab, position, Quaternion.Euler(rotation));
+			Vector3 rotation = new Vector3(0.0f, Random.Range(-360.0f, 360.0f), 0.0f);
+			GameObject chest = Instantiate(m_chestPrefab, m_grid[index].transform.position, Quaternion.Euler(rotation));
 			m_grid[index].SetGameObject(chest);
 		}
 	}
@@ -66,11 +57,5 @@ public class GameController : MonoBehaviour
 		m_pausePanel.SetActive(true);
 		m_playPanel.SetActive(false);
 		m_state = State.Play;
-	}
-
-	void Update()
-	{
-		int random = Random.Range(0, 49);
-		//m_grid[random].SetColor(new Color(1, 0, 0, 0.3f));
 	}
 }
