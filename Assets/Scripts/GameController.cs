@@ -13,12 +13,15 @@ public class GameController : MonoBehaviour
 
 	State m_state;
 
-	public GridCell[] m_grid;
+	public Grid m_grid;
 
 	public GameObject m_playPanel;
 	public GameObject m_pausePanel;
 
 	public GameObject m_chestPrefab;
+	public GameObject m_germanPiratePrefab;
+
+	private Pirate m_pirate;
 
 	void Start()
 	{
@@ -47,9 +50,16 @@ public class GameController : MonoBehaviour
 		foreach (int index in indices)
 		{
 			Vector3 rotation = new Vector3(0.0f, Random.Range(-360.0f, 360.0f), 0.0f);
-			GameObject chest = Instantiate(m_chestPrefab, m_grid[index].transform.position, Quaternion.Euler(rotation));
-			m_grid[index].SetGameObject(chest);
+			Chest chest = Instantiate(m_chestPrefab, m_grid.GetCell(index).transform.position, Quaternion.Euler(rotation))
+				.GetComponent<Chest>();
+			chest.SetCellIndex(index);
 		}
+
+		// Spawn player
+		int randomCellIndex = Random.Range(0, 7);
+		m_pirate = Instantiate(m_germanPiratePrefab, m_grid.GetCell(randomCellIndex).transform.position, Quaternion.Euler(new Vector3(0, 0, 0)))
+			.GetComponent<Pirate>();
+		m_pirate.SetCellIndex(randomCellIndex);
 	}
 
 	public void ActivatePauseState()

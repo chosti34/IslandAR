@@ -5,6 +5,7 @@ using UnityEngine;
 public class Pirate : MonoBehaviour
 {
 	private Animation m_animation;
+	private int m_cellIndex;
 
 	float speed = 7;
 	float gravity = 15;
@@ -118,5 +119,15 @@ public class Pirate : MonoBehaviour
 		{
 			Destroy(other.gameObject);
 		}
+	}
+
+	public void SetCellIndex(int index)
+	{
+		m_cellIndex = index;
+	}
+
+	public int GetCellIndex()
+	{
+		return m_cellIndex;
 	}
 }
