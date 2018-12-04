@@ -10,18 +10,14 @@ public class Pirate : MonoBehaviour
 	float speed = 7;
 	float gravity = 15;
 
-	CharacterController controller;
+	CharacterController m_chctrl;
 	Vector3 moveDirection = Vector3.zero;
 
-	// Use this for initialization
 	void Start()
 	{
-		// m_animation = GetComponent<Animation>();
-		controller = transform.GetComponent<CharacterController>();
-		Debug.Log(controller.minMoveDistance);
+		m_chctrl = transform.GetComponent<CharacterController>();
 	}
 
-	// Update is called once per frame
 	void Update()
 	{
 		//APPLY GRAVITY
@@ -29,10 +25,10 @@ public class Pirate : MonoBehaviour
 		{
 			moveDirection.y -= gravity * Time.deltaTime;
 		}
-		controller.Move(moveDirection * Time.deltaTime);
+		m_chctrl.Move(moveDirection * Time.deltaTime);
 		var left = transform.TransformDirection(Vector3.left);
 
-		if (controller.isGrounded)
+		if (m_chctrl.isGrounded)
 		{
 			if (Input.GetKeyDown(KeyCode.Space))
 			{
@@ -42,11 +38,11 @@ public class Pirate : MonoBehaviour
 			{
 				if (Input.GetKey(KeyCode.LeftShift))
 				{
-					controller.SimpleMove(transform.forward * speed * 2);
+					m_chctrl.SimpleMove(transform.forward * speed * 2);
 				}
 				else
 				{
-					controller.SimpleMove(transform.forward * speed);
+					m_chctrl.SimpleMove(transform.forward * speed);
 				}
 				transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
 				// m_animation.Play("Walk");
@@ -57,11 +53,11 @@ public class Pirate : MonoBehaviour
 				//m_animation.Play("Walk");
 				if (Input.GetKey(KeyCode.LeftShift))
 				{
-					controller.SimpleMove(transform.forward * speed * 2);
+					m_chctrl.SimpleMove(transform.forward * speed * 2);
 				}
 				else
 				{
-					controller.SimpleMove(transform.forward * speed);
+					m_chctrl.SimpleMove(transform.forward * speed);
 				}
 			}
 			else if (Input.GetKey("a"))
@@ -70,11 +66,11 @@ public class Pirate : MonoBehaviour
 				//m_animation.Play("Walk");
 				if (Input.GetKey(KeyCode.LeftShift))
 				{
-					controller.SimpleMove(transform.forward * speed * 2);
+					m_chctrl.SimpleMove(transform.forward * speed * 2);
 				}
 				else
 				{
-					controller.SimpleMove(transform.forward * speed);
+					m_chctrl.SimpleMove(transform.forward * speed);
 				}
 			}
 			else if (Input.GetKey("d"))
@@ -83,11 +79,11 @@ public class Pirate : MonoBehaviour
 				//m_animation.Play("Walk");
 				if (Input.GetKey(KeyCode.LeftShift))
 				{
-					controller.SimpleMove(transform.forward * speed * 2);
+					m_chctrl.SimpleMove(transform.forward * speed * 2);
 				}
 				else
 				{
-					controller.SimpleMove(transform.forward * speed);
+					m_chctrl.SimpleMove(transform.forward * speed);
 				}
 			}
 			else
@@ -103,14 +99,19 @@ public class Pirate : MonoBehaviour
 				relative = transform.TransformDirection(0, 0, 1);
 				if (Input.GetKey(KeyCode.LeftShift))
 				{
-					controller.Move(relative * Time.deltaTime * speed * 2);
+					m_chctrl.Move(relative * Time.deltaTime * speed * 2);
 				}
 				else
 				{
-					controller.Move(relative * Time.deltaTime * speed);
+					m_chctrl.Move(relative * Time.deltaTime * speed);
 				}
 			}
 		}
+	}
+
+	public void MoveTo(Vector3 pos)
+	{
+		m_chctrl.transform.position = pos;
 	}
 
 	void OnTriggerEnter(Collider other)

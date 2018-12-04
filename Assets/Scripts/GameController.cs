@@ -68,4 +68,40 @@ public class GameController : MonoBehaviour
 		m_playPanel.SetActive(false);
 		m_state = State.Play;
 	}
+
+	public void OnFirstButtonClick()
+	{
+		int index = m_pirate.GetCellIndex();
+		GridCell upCell = m_grid.GetCell(index + 7);
+		m_pirate.MoveTo(upCell.transform.position);
+		m_pirate.SetCellIndex(index + 7);
+		m_pirate.transform.rotation = Quaternion.Euler(0, 0, 0);
+	}
+
+	public void OnSecondButtonClick()
+	{
+		int index = m_pirate.GetCellIndex();
+		GridCell rightCell = m_grid.GetCell(index + 1);
+		m_pirate.MoveTo(rightCell.transform.position);
+		m_pirate.SetCellIndex(index + 1);
+		m_pirate.transform.rotation = Quaternion.Euler(0, 90, 0);
+	}
+
+	public void OnThirdButtonClick()
+	{
+		int index = m_pirate.GetCellIndex();
+		GridCell downCell = m_grid.GetCell(index - 7);
+		m_pirate.MoveTo(downCell.transform.position);
+		m_pirate.SetCellIndex(index - 7);
+		m_pirate.transform.rotation = Quaternion.Euler(0, 180, 0);
+	}
+
+	public void OnFourthButtonClick()
+	{
+		int index = m_pirate.GetCellIndex();
+		GridCell leftCell = m_grid.GetCell(index - 1);
+		m_pirate.MoveTo(leftCell.transform.position);
+		m_pirate.SetCellIndex(index - 1);
+		m_pirate.transform.rotation = Quaternion.Euler(0, 270, 0);
+	}
 }
