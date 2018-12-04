@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
 	public GameObject m_chestPrefab;
 	public GameObject m_germanPiratePrefab;
 
+	public GameObject m_answers;
+
 	private Pirate m_pirate;
 
 	void Start()
@@ -60,6 +62,13 @@ public class GameController : MonoBehaviour
 		m_pirate = Instantiate(m_germanPiratePrefab, m_grid.GetCell(randomCellIndex).transform.position, Quaternion.Euler(new Vector3(0, 0, 0)))
 			.GetComponent<Pirate>();
 		m_pirate.SetCellIndex(randomCellIndex);
+
+		// Move answers
+		m_answers.transform.position = new Vector3(
+			m_pirate.transform.position.x,
+			m_answers.transform.position.y,
+			m_pirate.transform.position.z
+		);
 	}
 
 	public void ActivatePauseState()
@@ -76,6 +85,13 @@ public class GameController : MonoBehaviour
 		m_pirate.MoveTo(upCell.transform.position);
 		m_pirate.SetCellIndex(index + 7);
 		m_pirate.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+		// Move answers
+		m_answers.transform.position = new Vector3(
+			m_pirate.transform.position.x,
+			m_answers.transform.position.y,
+			m_pirate.transform.position.z
+		);
 	}
 
 	public void OnSecondButtonClick()
@@ -85,6 +101,13 @@ public class GameController : MonoBehaviour
 		m_pirate.MoveTo(rightCell.transform.position);
 		m_pirate.SetCellIndex(index + 1);
 		m_pirate.transform.rotation = Quaternion.Euler(0, 90, 0);
+
+		// Move answers
+		m_answers.transform.position = new Vector3(
+			m_pirate.transform.position.x,
+			m_answers.transform.position.y,
+			m_pirate.transform.position.z
+		);
 	}
 
 	public void OnThirdButtonClick()
@@ -94,6 +117,13 @@ public class GameController : MonoBehaviour
 		m_pirate.MoveTo(downCell.transform.position);
 		m_pirate.SetCellIndex(index - 7);
 		m_pirate.transform.rotation = Quaternion.Euler(0, 180, 0);
+
+		// Move answers
+		m_answers.transform.position = new Vector3(
+			m_pirate.transform.position.x,
+			m_answers.transform.position.y,
+			m_pirate.transform.position.z
+		);
 	}
 
 	public void OnFourthButtonClick()
@@ -103,5 +133,12 @@ public class GameController : MonoBehaviour
 		m_pirate.MoveTo(leftCell.transform.position);
 		m_pirate.SetCellIndex(index - 1);
 		m_pirate.transform.rotation = Quaternion.Euler(0, 270, 0);
+
+		// Move answers
+		m_answers.transform.position = new Vector3(
+			m_pirate.transform.position.x,
+			m_answers.transform.position.y,
+			m_pirate.transform.position.z
+		);
 	}
 }
