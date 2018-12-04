@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
 
 	public GameObject m_answers;
 
+	public Terrain m_terrain;
 	private Pirate m_pirate;
 
 	void Start()
@@ -59,7 +60,7 @@ public class GameController : MonoBehaviour
 
 		// Spawn player
 		int randomCellIndex = Random.Range(0, 7);
-		m_pirate = Instantiate(m_germanPiratePrefab, m_grid.GetCell(randomCellIndex).transform.position, Quaternion.Euler(new Vector3(0, 0, 0)))
+		m_pirate = Instantiate(m_germanPiratePrefab, m_grid.GetCell(randomCellIndex).transform.position, Quaternion.Euler(new Vector3(0, 0, 0)), m_terrain.transform)
 			.GetComponent<Pirate>();
 		m_pirate.SetCellIndex(randomCellIndex);
 
@@ -69,6 +70,10 @@ public class GameController : MonoBehaviour
 			m_answers.transform.position.y,
 			m_pirate.transform.position.z
 		);
+	}
+
+	private void Update()
+	{
 	}
 
 	public void ActivatePauseState()
