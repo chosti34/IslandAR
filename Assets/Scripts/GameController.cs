@@ -54,6 +54,7 @@ public class GameController : MonoBehaviour
 
 	public GameObject m_playPanel;
 	public GameObject m_pausePanel;
+	public GameObject m_questionsPanel;
 
 	public GameObject m_chestPrefab;
 	public GameObject m_germanPiratePrefab;
@@ -126,6 +127,13 @@ public class GameController : MonoBehaviour
 			.GetComponent<Pirate>();
 		m_pirate.SetCellIndex(randomCellIndex);
 
+		m_pirate.SetCallback(() => {
+			m_questionsPanel.SetActive(true);
+			m_answers.SetActive(true);
+			MoveAnswersToPirate();
+			UpdateAnswersAndQuestionsAvailability(); 
+		});
+
 		m_answers.SetActive(true);
 		MoveAnswersToPirate();
 		UpdateAnswersAndQuestionsAvailability();
@@ -194,7 +202,9 @@ public class GameController : MonoBehaviour
 			m_pirate.SetCellIndex(index);
 			m_pirate.transform.rotation = rotation;
 			MoveAnswersToPirate();
-			UpdateAnswersAndQuestionsAvailability();
+			m_answers.SetActive(false);
+			m_questionsPanel.SetActive(false);
+			//UpdateAnswersAndQuestionsAvailability();
 		}
 	}
 
@@ -207,7 +217,7 @@ public class GameController : MonoBehaviour
 		);
 	}
 
-	void UpdateAnswersAndQuestionsAvailability()
+	public void UpdateAnswersAndQuestionsAvailability()
 	{
 		List<TextMesh> answersText = new List<TextMesh>();
 		for (int i = 0; i < m_answers.transform.childCount; ++i)

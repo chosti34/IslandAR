@@ -4,18 +4,30 @@ using UnityEngine;
 
 public class Pirate : MonoBehaviour
 {
-	private Animation m_animation;
+	private Animator m_animator;
 	private int m_cellIndex;
 
-	float speed = 7;
+	float speed = 5;
 	float gravity = 15;
 
 	CharacterController m_chctrl;
 	Vector3 moveDirection = Vector3.zero;
 
+	Vector3 m_destination;
+	bool m_moving;
+
+	System.Action m_action;
+
+	public void SetCallback(System.Action action)
+	{
+		m_action = action;
+	}
+
 	void Start()
 	{
 		m_chctrl = transform.GetComponent<CharacterController>();
+		m_animator = GetComponent<Animator>();
+		m_moving = false;
 	}
 
 	void Update()
@@ -25,6 +37,7 @@ public class Pirate : MonoBehaviour
 		{
 			moveDirection.y -= gravity * Time.deltaTime;
 		}
+
 		m_chctrl.Move(moveDirection * Time.deltaTime);
 		var left = transform.TransformDirection(Vector3.left);
 
@@ -33,6 +46,7 @@ public class Pirate : MonoBehaviour
 			if (Input.GetKeyDown(KeyCode.Space))
 			{
 				moveDirection.y = speed;
+				//m_animator.SetTrigger("RunTrigger");
 			}
 			else if (Input.GetKey("w"))
 			{
@@ -45,7 +59,6 @@ public class Pirate : MonoBehaviour
 					m_chctrl.SimpleMove(transform.forward * speed);
 				}
 				transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-				// m_animation.Play("Walk");
 			}
 			else if (Input.GetKey("s"))
 			{
@@ -59,6 +72,7 @@ public class Pirate : MonoBehaviour
 				{
 					m_chctrl.SimpleMove(transform.forward * speed);
 				}
+				//m_animator.SetTrigger("RunTrigger");
 			}
 			else if (Input.GetKey("a"))
 			{
@@ -72,6 +86,7 @@ public class Pirate : MonoBehaviour
 				{
 					m_chctrl.SimpleMove(transform.forward * speed);
 				}
+				//m_animator.SetTrigger("RunTrigger");
 			}
 			else if (Input.GetKey("d"))
 			{
@@ -85,10 +100,7 @@ public class Pirate : MonoBehaviour
 				{
 					m_chctrl.SimpleMove(transform.forward * speed);
 				}
-			}
-			else
-			{
-				// m_animation.Play("Idle");
+			//m_animator.SetTrigger("RunTrigger");
 			}
 		}
 		else
@@ -107,11 +119,26 @@ public class Pirate : MonoBehaviour
 				}
 			}
 		}
+
+		if (m_moving)
+		{
+			transform.position = Vector3.Lerp(transform.position, m_destination, speed * Time.deltaTime);
+			Debug.Log(Vector2.Distance(transform.position, m_destination));
+			if (Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(m_destination.x, m_destination.z)) <= 0.35f)
+			{
+				m_moving = false;
+				m_animator.SetTrigger("Trigger");
+				m_action();
+			}
+		}
 	}
 
 	public void MoveTo(Vector3 pos)
 	{
-		m_chctrl.transform.position = pos;
+		// m_chctrl.transform.position = pos;
+		m_animator.SetTrigger("Trigger");
+		m_destination = new Vector3(pos.x, transform.position.y, pos.z);
+		m_moving = true;
 	}
 
 	void OnTriggerEnter(Collider other)
