@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 95082397127523428}
   - component: {fileID: 143195165491809852}
   - component: {fileID: 114362712706009910}
+  - component: {fileID: 114514294912301416}
   m_Layer: 0
   m_Name: GermanPirate
   m_TagString: Untagged
@@ -917,6 +918,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e00343d865e4d718aa67eaa334e62d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114514294912301416
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1018984531834824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 215
+    i1: 77
+    i2: 142
+    i3: 93
+    i4: 239
+    i5: 254
+    i6: 100
+    i7: 12
+    i8: 26
+    i9: 168
+    i10: 117
+    i11: 156
+    i12: 146
+    i13: 155
+    i14: 177
+    i15: 219
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!137 &137648911903247598
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

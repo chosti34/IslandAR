@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class Pirate : MonoBehaviour
+public class Pirate : NetworkBehaviour
 {
 	private Animator m_animator;
 	private int m_cellIndex;
@@ -32,6 +33,11 @@ public class Pirate : MonoBehaviour
 
 	void Update()
 	{
+		if (isLocalPlayer)
+		{
+			//return;
+		}
+
 		//APPLY GRAVITY
 		if (moveDirection.y > gravity * -1)
 		{
