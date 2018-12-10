@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.Networking;
 
 public class QuestionAndAnswer
 {
@@ -34,12 +35,6 @@ public static class IListExtensions
 
 public class GameController : MonoBehaviour
 {
-	enum State
-	{
-		Pause,
-		Play
-	}
-
 	enum Direction
 	{
 		Up,
@@ -47,8 +42,6 @@ public class GameController : MonoBehaviour
 		Down,
 		Left
 	}
-
-	State m_state;
 
 	public Grid m_grid;
 
@@ -90,20 +83,21 @@ public class GameController : MonoBehaviour
 		};
 		m_directionMap = new Dictionary<int, Direction>();
 
-		m_answers.SetActive(false);
-		ActivatePauseState();
+		//m_answers.SetActive(false);
+		//ActivatePauseState();
 	}
 
 	public void ActivatePlayState()
 	{
-		m_pausePanel.SetActive(false);
-		m_playPanel.SetActive(true);
-		m_state = State.Play;
+		// m_pausePanel.SetActive(false);
+		// m_playPanel.SetActive(true);
+		// m_state = State.Play;
 	}
 
 	public void StartGame()
 	{
 		ActivatePlayState();
+		Debug.Log("hello");
 
 		// Spawn chests
 		HashSet<int> indices = new HashSet<int>();
@@ -141,9 +135,9 @@ public class GameController : MonoBehaviour
 
 	public void ActivatePauseState()
 	{
-		m_pausePanel.SetActive(true);
-		m_playPanel.SetActive(false);
-		m_state = State.Play;
+		// m_pausePanel.SetActive(true);
+		// m_playPanel.SetActive(false);
+		// m_state = State.Play;
 	}
 
 	public void OnFirstButtonClick()
@@ -198,7 +192,7 @@ public class GameController : MonoBehaviour
 		if (index != Grid.NON_REACHABLE_CELL)
 		{
 			GridCell cell = m_grid.GetCell(index);
-			m_pirate.MoveTo(cell.transform.position);
+			m_pirate.CmdMoveTo(cell.transform.position);
 			m_pirate.SetCellIndex(index);
 			m_pirate.transform.rotation = rotation;
 			MoveAnswersToPirate();
