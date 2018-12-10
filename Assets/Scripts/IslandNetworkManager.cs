@@ -25,7 +25,7 @@ public class IslandNetworkManager : NetworkManager
 			GameObject player = Instantiate(
 				playerPrefab,
 				startPositions[playersCount - 1].position,
-				startPositions[playersCount - 1].transform.rotation);
+				Quaternion.identity);
 			NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
 
 			m_players.Add(player.GetComponent<Pirate>());

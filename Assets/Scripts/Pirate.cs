@@ -49,7 +49,7 @@ public class Pirate : NetworkBehaviour
 
 	private void Awake()
 	{
-		m_identityAnswersRotation = m_answers.transform.rotation;
+		m_identityAnswersRotation = Quaternion.identity;
 	}
 
 	void Start()
