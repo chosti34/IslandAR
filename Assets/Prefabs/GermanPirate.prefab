@@ -804,6 +804,7 @@ GameObject:
   - component: {fileID: 114149926633238484}
   - component: {fileID: 114646541211601782}
   - component: {fileID: 114381309593885040}
+  - component: {fileID: 114381653978907654}
   m_Layer: 0
   m_Name: GermanPirate
   m_TagString: Untagged
@@ -2044,7 +2045,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_speed: 5
   m_answers: {fileID: 1733746248799702}
-  m_identityAnswersRotation: {x: 0, y: 0, z: 0, w: 0}
+  m_answersRotationIdentity: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &114176641956476720
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2232,7 +2233,7 @@ MonoBehaviour:
   m_Script: {fileID: -1768714887, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TransformSyncMode: 4
+  m_TransformSyncMode: 1
   m_SendInterval: 0.033333335
   m_SyncRotationAxis: 7
   m_RotationSyncCompression: 0
@@ -2242,6 +2243,25 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
+--- !u!114 &114381653978907654
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1925545999826952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1590678366, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Animator: {fileID: 95965057189563884}
+  m_ParameterSendBits: 1
+  param0: 
+  param1: 
+  param2: 
+  param3: 
+  param4: 
+  param5: 
 --- !u!114 &114443496250478972
 MonoBehaviour:
   m_ObjectHideFlags: 1

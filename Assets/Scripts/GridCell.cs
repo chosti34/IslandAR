@@ -4,4 +4,5 @@ using UnityEngine;
 
 public class GridCell : MonoBehaviour
 {
+	public int m_index;
 }
