@@ -444,6 +444,7 @@ public class Pirate : NetworkBehaviour
 		int right = IslandNetworkManager.Instance.m_grid.GetRightCellIndex(CellIndex);
 		int down = IslandNetworkManager.Instance.m_grid.GetDownCellIndex(CellIndex);
 		int left = IslandNetworkManager.Instance.m_grid.GetLeftCellIndex(CellIndex);
+		Debug.Log(CellIndex);
 
 		IslandNetworkManager instance = IslandNetworkManager.Instance;
 		if (instance.m_players.Count == 2)

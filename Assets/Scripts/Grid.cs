@@ -11,7 +11,7 @@ public class Grid : MonoBehaviour
 
 	void Start()
 	{
-		m_rows = 7;
+		m_rows = 9;
 		if (m_cells.Length != m_rows * m_rows)
 		{
 			throw new Exception("Game designed to have 49 cells");
@@ -24,7 +24,7 @@ public class Grid : MonoBehaviour
 		{
 			return m_cells[index];
 		}
-		throw new IndexOutOfRangeException("cell's index must be in range from 0 to 48");
+		throw new IndexOutOfRangeException("cell's index must be in range from 0 to 80");
 	}
 
 	public GridCell GetCell(int row, int col)
@@ -39,7 +39,7 @@ public class Grid : MonoBehaviour
 
 	public int GetUpperCellIndex(int center)
 	{
-		int upper = center + m_rows;
+		int upper = center - m_rows;
 		return CellIndexIsValid(upper) ? upper : NON_REACHABLE_CELL;
 	}
 
@@ -51,7 +51,7 @@ public class Grid : MonoBehaviour
 
 	public int GetDownCellIndex(int center)
 	{
-		int down = center - m_rows;
+		int down = center + m_rows;
 		return CellIndexIsValid(down) ? down : NON_REACHABLE_CELL;
 	}
 
