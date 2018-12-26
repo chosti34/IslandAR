@@ -4,18 +4,21 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class IslandNetworkManager : NetworkManager
+public class GameController : NetworkManager
 {
 	public List<Pirate> m_players = new List<Pirate>();
 	public Grid m_grid;
 
 	public GameObject scorePanel;
 	public GameObject timePanel;
+
 	public Text m_hostScoreText;
 	public Text m_clientScoreText;
 
+	public Timer m_timer;
+
 	#region
-	public static IslandNetworkManager Instance { get; private set; }
+	public static GameController Instance { get; private set; }
 	#endregion
 
 	public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
@@ -26,6 +29,7 @@ public class IslandNetworkManager : NetworkManager
 			if (playersCount == 2)
 			{
 				SpawnChests();
+				m_timer.SetPaused(false);
 			}
 
 			GameObject player = Instantiate(
@@ -43,7 +47,7 @@ public class IslandNetworkManager : NetworkManager
 			conn.Disconnect();
 		}
 	}
-		
+
 	private void Awake()
 	{
 		Instance = this;
@@ -51,6 +55,14 @@ public class IslandNetworkManager : NetworkManager
 
 	private void Update()
 	{
+		if (m_players.Count != 2)
+		{
+			return;
+		}
+
+		if (m_timer.GetTime() <= Mathf.Epsilon)
+		{
+		}
 	}
 
 	private void SpawnChests()

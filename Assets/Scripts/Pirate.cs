@@ -169,7 +169,7 @@ public class Pirate : NetworkBehaviour
 		}
 
 		m_characterController.Move(moveDirection * Time.deltaTime);
-		var left = transform.TransformDirection(Vector3.left);
+		//var left = transform.TransformDirection(Vector3.left);
 
 		if (m_characterController.isGrounded)
 		{
@@ -257,7 +257,6 @@ public class Pirate : NetworkBehaviour
 		if (m_moving)
 		{
 			transform.position = Vector3.Lerp(transform.position, m_destination, m_speed * Time.deltaTime);
-			Debug.Log(Vector2.Distance(transform.position, m_destination));
 			if (Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(m_destination.x, m_destination.z)) <= 0.6f)
 			{
 				m_moving = false;
@@ -332,39 +331,37 @@ public class Pirate : NetworkBehaviour
 			Destroy(other.gameObject);
 
 			m_nScore += 1;
-			IslandNetworkManager island = IslandNetworkManager.Instance;
+			GameController island = GameController.Instance;
 
 			if (isServer && island.m_players.Count == 2)
 			{
-				Debug.Log("is server: " + isServer);
-				Debug.Log("is client: " + isClient);
-				RpcUpdateScoreUI("Player #1: " + island.m_players[0].m_nScore, "Player #2: " + island.m_players[1].m_nScore);
+				RpcUpdateScoreUI(
+					"Player #1: " + island.m_players[0].m_nScore,
+					"Player #2: " + island.m_players[1].m_nScore
+				);
 			}
 			else if (island.m_players.Count == 2)
 			{
-				Debug.Log("is server: " + isServer);
-				Debug.Log("is client: " + isClient);
-				CmdUpdateScoreUI("Player #1: " + island.m_players[0].m_nScore, "Player #2: " + island.m_players[1].m_nScore);
+				CmdUpdateScoreUI(
+					"Player #1: " + island.m_players[0].m_nScore,
+					"Player #2: " + island.m_players[1].m_nScore
+				);
 			}
 		}
 	}
 
 	[ClientRpc]
-	void RpcUpdateScoreUI(string x, string y)
+	void RpcUpdateScoreUI(string hostScoreText, string clientScoreText)
 	{
-		Debug.Log(x);
-		Debug.Log(y);
-		IslandNetworkManager.Instance.m_hostScoreText.text = x;
-		IslandNetworkManager.Instance.m_clientScoreText.text = y;
+		GameController.Instance.m_hostScoreText.text = hostScoreText;
+		GameController.Instance.m_clientScoreText.text = clientScoreText;
 	}
 
 	[Command]
-	void CmdUpdateScoreUI(string x, string y)
+	void CmdUpdateScoreUI(string hostScoreText, string clientScoreText)
 	{
-		Debug.Log(x);
-		Debug.Log(y);
-		IslandNetworkManager.Instance.m_hostScoreText.text = x;
-		IslandNetworkManager.Instance.m_clientScoreText.text = y;
+		GameController.Instance.m_hostScoreText.text = hostScoreText;
+		GameController.Instance.m_clientScoreText.text = clientScoreText;
 	}
 
 	void MovePirate(Direction direction)
@@ -377,26 +374,26 @@ public class Pirate : NetworkBehaviour
 		switch (direction)
 		{
 			case Direction.Up:
-				index = IslandNetworkManager.Instance.m_grid.GetUpperCellIndex(CellIndex);
+				index = GameController.Instance.m_grid.GetUpperCellIndex(CellIndex);
 				rotation = Quaternion.Euler(new Vector3(0, 0, 0));
 				break;
 			case Direction.Right:
-				index = IslandNetworkManager.Instance.m_grid.GetRightCellIndex(CellIndex);
+				index = GameController.Instance.m_grid.GetRightCellIndex(CellIndex);
 				rotation = Quaternion.Euler(new Vector3(0, 90, 0));
 				break;
 			case Direction.Down:
-				index = IslandNetworkManager.Instance.m_grid.GetDownCellIndex(CellIndex);
+				index = GameController.Instance.m_grid.GetDownCellIndex(CellIndex);
 				rotation = Quaternion.Euler(new Vector3(0, 180, 0));
 				break;
 			case Direction.Left:
-				index = IslandNetworkManager.Instance.m_grid.GetLeftCellIndex(CellIndex);
+				index = GameController.Instance.m_grid.GetLeftCellIndex(CellIndex);
 				rotation = Quaternion.Euler(new Vector3(0, 270, 0));
 				break;
 		}
 
 		if (index != Grid.NON_REACHABLE_CELL)
 		{
-			GridCell cell = IslandNetworkManager.Instance.m_grid.GetCell(index);
+			GridCell cell = GameController.Instance.m_grid.GetCell(index);
 			CmdMoveTo(cell.transform.position);
 			CellIndex = index;
 			transform.rotation = rotation;
@@ -416,7 +413,7 @@ public class Pirate : NetworkBehaviour
 		);
 	}
 
-	public void UpdateAnswersAndQuestionsAvailability()
+	void UpdateAnswersAndQuestionsAvailability()
 	{
 		if (!isLocalPlayer) return;
 
@@ -445,13 +442,12 @@ public class Pirate : NetworkBehaviour
 			answersText[ToDirectionIndex(m_directionMap[i])].text = questionAndAnswer.answer;
 		}
 
-		int upper = IslandNetworkManager.Instance.m_grid.GetUpperCellIndex(CellIndex);
-		int right = IslandNetworkManager.Instance.m_grid.GetRightCellIndex(CellIndex);
-		int down = IslandNetworkManager.Instance.m_grid.GetDownCellIndex(CellIndex);
-		int left = IslandNetworkManager.Instance.m_grid.GetLeftCellIndex(CellIndex);
-		Debug.Log(CellIndex);
+		int upper = GameController.Instance.m_grid.GetUpperCellIndex(CellIndex);
+		int right = GameController.Instance.m_grid.GetRightCellIndex(CellIndex);
+		int down = GameController.Instance.m_grid.GetDownCellIndex(CellIndex);
+		int left = GameController.Instance.m_grid.GetLeftCellIndex(CellIndex);
 
-		IslandNetworkManager instance = IslandNetworkManager.Instance;
+		GameController instance = GameController.Instance;
 		if (instance.m_players.Count == 2)
 		{
 			Pirate otherPirate = instance.m_players[1].playerControllerId == playerControllerId ? instance.m_players[1] : instance.m_players[0];

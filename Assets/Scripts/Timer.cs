@@ -5,17 +5,41 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-	Text m_text;
+	bool m_paused;
 	float m_seconds;
+	Text m_text;
+
+	public void Reset()
+	{
+		m_paused = true;
+		m_seconds = 45.0f;
+		UpdateTimerColor();
+	}
+
+	public void SetPaused(bool paused)
+	{
+		m_paused = paused;
+	}
+
+	public float GetTime()
+	{
+		return m_seconds;
+	}
 
 	void Start()
 	{
 		m_text = GetComponent<Text>();
-		m_seconds = 45.0f;
+		Reset();
 	}
 
 	void Update()
 	{
+		Debug.Log(m_seconds);
+		if (m_paused)
+		{
+			return;
+		}
+
 		if (m_seconds > 0.0f)
 		{
 			m_seconds -= Time.deltaTime;
