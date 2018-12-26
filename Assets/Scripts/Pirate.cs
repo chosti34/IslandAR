@@ -69,11 +69,7 @@ public class Pirate : NetworkBehaviour
 	private float m_speed;
 
 	[SyncVar]
-	private int m_nScoreHost;
-
-	[SyncVar]
-	private int m_nScoreClient;
-
+	public int m_nScore;
 
 	public GameObject m_answers;
 	public Quaternion m_answersRotationIdentity;
@@ -90,14 +86,6 @@ public class Pirate : NetworkBehaviour
 
 	[SyncVar]
 	bool m_moving;
-
-	[SyncVar]
-	string m_scoreHostString;
-	[SyncVar]
-	string m_scoreClientString;
-
-	Text m_scoreHostText;
-	Text m_scoreClientText;
 
 	// Player user interface
 	private Canvas m_canvas;
@@ -125,15 +113,6 @@ public class Pirate : NetworkBehaviour
 		m_buttons[1] = GameObject.Find("Button (1)").GetComponent<Button>();
 		m_buttons[2] = GameObject.Find("Button (2)").GetComponent<Button>();
 		m_buttons[3] = GameObject.Find("Button (3)").GetComponent<Button>();
-
-		m_scoreHostText = GameObject.Find("PlayerOneScore").GetComponent<Text>();
-		m_scoreClientText = GameObject.Find("PlayerTwoScore").GetComponent<Text>();
-
-		m_scoreHostString = "Host: 0";
-		m_scoreClientString = "Client: 0";
-
-		m_scoreHostText.text = m_scoreHostString;
-		m_scoreClientText.text = m_scoreClientString;
 
 		if (isLocalPlayer)
 		{
@@ -344,32 +323,48 @@ public class Pirate : NetworkBehaviour
 		base.OnStartLocalPlayer();
 	}
 
+	[ClientCallback]
 	void OnTriggerEnter(Collider other)
 	{
-		if (!isLocalPlayer)
-		{
-			return;
-		}
-
 		if (other.tag == "Chest")
 		{
 			GetComponent<AudioSource>().PlayOneShot(m_clip);
 			Destroy(other.gameObject);
 
-			if (isServer)
-			{
-				m_nScoreHost += 1;
-			}
-			else
-			{
-				m_nScoreClient += 1;
-			}
+			m_nScore += 1;
+			IslandNetworkManager island = IslandNetworkManager.Instance;
 
-			m_scoreHostString = "Host: " + m_nScoreHost.ToString();
-			m_scoreClientString = "Client: " + m_nScoreClient.ToString();
-			m_scoreHostText.text = m_scoreHostString;
-			m_scoreClientText.text = m_scoreClientString;
+			if (isServer && island.m_players.Count == 2)
+			{
+				Debug.Log("is server: " + isServer);
+				Debug.Log("is client: " + isClient);
+				RpcUpdateScoreUI("Player #1: " + island.m_players[0].m_nScore, "Player #2: " + island.m_players[1].m_nScore);
+			}
+			else if (island.m_players.Count == 2)
+			{
+				Debug.Log("is server: " + isServer);
+				Debug.Log("is client: " + isClient);
+				CmdUpdateScoreUI("Player #1: " + island.m_players[0].m_nScore, "Player #2: " + island.m_players[1].m_nScore);
+			}
 		}
+	}
+
+	[ClientRpc]
+	void RpcUpdateScoreUI(string x, string y)
+	{
+		Debug.Log(x);
+		Debug.Log(y);
+		IslandNetworkManager.Instance.m_hostScoreText.text = x;
+		IslandNetworkManager.Instance.m_clientScoreText.text = y;
+	}
+
+	[Command]
+	void CmdUpdateScoreUI(string x, string y)
+	{
+		Debug.Log(x);
+		Debug.Log(y);
+		IslandNetworkManager.Instance.m_hostScoreText.text = x;
+		IslandNetworkManager.Instance.m_clientScoreText.text = y;
 	}
 
 	void MovePirate(Direction direction)

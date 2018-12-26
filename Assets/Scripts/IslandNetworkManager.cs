@@ -9,6 +9,11 @@ public class IslandNetworkManager : NetworkManager
 	public List<Pirate> m_players = new List<Pirate>();
 	public Grid m_grid;
 
+	public GameObject scorePanel;
+	public GameObject timePanel;
+	public Text m_hostScoreText;
+	public Text m_clientScoreText;
+
 	#region
 	public static IslandNetworkManager Instance { get; private set; }
 	#endregion
@@ -38,10 +43,14 @@ public class IslandNetworkManager : NetworkManager
 			conn.Disconnect();
 		}
 	}
-
+		
 	private void Awake()
 	{
 		Instance = this;
+	}
+
+	private void Update()
+	{
 	}
 
 	private void SpawnChests()
