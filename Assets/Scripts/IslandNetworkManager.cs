@@ -44,14 +44,6 @@ public class IslandNetworkManager : NetworkManager
 		Instance = this;
 	}
 
-	private void Start()
-	{
-	}
-
-	private void Update()
-	{
-	}
-
 	private void SpawnChests()
 	{
 		HashSet<int> indices = new HashSet<int>();

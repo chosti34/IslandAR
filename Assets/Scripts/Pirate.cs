@@ -69,21 +69,11 @@ public class Pirate : NetworkBehaviour
 	private float m_speed;
 
 	[SyncVar]
-	private int m_score;
-	public int Score
-	{
-		get
-		{
-			return m_score;
-		}
-		set
-		{
-			if (value > 0 && m_score != value)
-			{
-				m_score = value;
-			}
-		}
-	}
+	private int m_nScoreHost;
+
+	[SyncVar]
+	private int m_nScoreClient;
+
 
 	public GameObject m_answers;
 	public Quaternion m_answersRotationIdentity;
@@ -101,13 +91,20 @@ public class Pirate : NetworkBehaviour
 	[SyncVar]
 	bool m_moving;
 
-	Text m_hostScore;
-	Text m_clientScore;
+	[SyncVar]
+	string m_scoreHostString;
+	[SyncVar]
+	string m_scoreClientString;
+
+	Text m_scoreHostText;
+	Text m_scoreClientText;
 
 	// Player user interface
 	private Canvas m_canvas;
 	private GameObject m_questionsPanel;
 	private Button[] m_buttons;
+
+	public AudioClip m_clip;
 
 	private void Awake()
 	{
@@ -128,10 +125,15 @@ public class Pirate : NetworkBehaviour
 		m_buttons[1] = GameObject.Find("Button (1)").GetComponent<Button>();
 		m_buttons[2] = GameObject.Find("Button (2)").GetComponent<Button>();
 		m_buttons[3] = GameObject.Find("Button (3)").GetComponent<Button>();
-		m_hostScore = GameObject.Find("PlayerOneScore").GetComponent<Text>();
-		m_clientScore = GameObject.Find("PlayerTwoScore").GetComponent<Text>();
-		m_hostScore.text = "Host: 0";
-		m_clientScore.text = "Client: 0";
+
+		m_scoreHostText = GameObject.Find("PlayerOneScore").GetComponent<Text>();
+		m_scoreClientText = GameObject.Find("PlayerTwoScore").GetComponent<Text>();
+
+		m_scoreHostString = "Host: 0";
+		m_scoreClientString = "Client: 0";
+
+		m_scoreHostText.text = m_scoreHostString;
+		m_scoreClientText.text = m_scoreClientString;
 
 		if (isLocalPlayer)
 		{
@@ -146,7 +148,6 @@ public class Pirate : NetworkBehaviour
 			m_buttons[3].onClick.AddListener(OnFourthButtonClick);
 		}
 
-		m_score = 0;
 		m_characterController = transform.GetComponent<CharacterController>();
 		m_animator = GetComponent<NetworkAnimator>();
 		m_moving = false;
@@ -345,20 +346,29 @@ public class Pirate : NetworkBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
+		if (!isLocalPlayer)
+		{
+			return;
+		}
+
 		if (other.tag == "Chest")
 		{
+			GetComponent<AudioSource>().PlayOneShot(m_clip);
 			Destroy(other.gameObject);
-			++m_score;
-			Debug.Log(playerControllerId);
 
-			if (!isClient)
+			if (isServer)
 			{
-				m_hostScore.text = "Host: " + m_score.ToString();
+				m_nScoreHost += 1;
 			}
 			else
 			{
-				m_clientScore.text = "Client: " + m_score.ToString();
+				m_nScoreClient += 1;
 			}
+
+			m_scoreHostString = "Host: " + m_nScoreHost.ToString();
+			m_scoreClientString = "Client: " + m_nScoreClient.ToString();
+			m_scoreHostText.text = m_scoreHostString;
+			m_scoreClientText.text = m_scoreClientString;
 		}
 	}
 
@@ -406,7 +416,7 @@ public class Pirate : NetworkBehaviour
 
 		m_answers.transform.position = new Vector3(
 			transform.position.x,
-			transform.position.y,
+			transform.position.y + 2.68f,
 			transform.position.z
 		);
 	}
