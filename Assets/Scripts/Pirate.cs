@@ -69,12 +69,18 @@ public class Pirate : NetworkBehaviour
 	private float m_speed;
 
 	[SyncVar]
+	public bool m_run = false;
+
+	[SyncVar]
 	public int m_nScore;
 
 	public GameObject m_answers;
 	public Quaternion m_answersRotationIdentity;
 
 	float gravity = 15;
+
+	[SyncVar]
+	float m_seconds = 45;
 
 	CharacterController m_characterController;
 
@@ -160,6 +166,17 @@ public class Pirate : NetworkBehaviour
 		if (!isLocalPlayer)
 		{
 			return;
+		}
+
+		if (isServer && GameController.Instance.m_players.Count == 2)
+		{
+			m_seconds -= Time.deltaTime;
+			RpcUpdateTime();
+		}
+		else if (!isServer)
+		{
+			m_seconds = GameController.Instance.m_timer.GetTime();
+			CmdUpdateTime();
 		}
 
 		//APPLY GRAVITY
@@ -362,6 +379,48 @@ public class Pirate : NetworkBehaviour
 	{
 		GameController.Instance.m_hostScoreText.text = hostScoreText;
 		GameController.Instance.m_clientScoreText.text = clientScoreText;
+	}
+
+	[Command]
+	public void CmdUpdateTime()
+	{
+		GameController.Instance.m_timer.SetTime(m_seconds);
+	}
+
+	[ClientRpc]
+	public void RpcUpdateTime()
+	{
+		GameController.Instance.m_timer.SetTime(m_seconds);
+	}
+
+	[ClientRpc]
+	public void RpcShowScoreAndTimePanels()
+	{
+		GameController.Instance.m_scorePanel.SetActive(true);
+		GameController.Instance.m_timePanel.SetActive(true);
+		GameController.Instance.m_timer.SetPaused(false);
+	}
+
+	[Command]
+	public void CmdShowScoreAndTimePanels()
+	{
+		GameController.Instance.m_scorePanel.SetActive(true);
+		GameController.Instance.m_timePanel.SetActive(true);
+		GameController.Instance.m_timer.SetPaused(false);
+	}
+
+	[ClientRpc]
+	public void RpcShowGameResultsText(string text)
+	{
+		GameController.Instance.m_gameResultsPanel.GetComponentInChildren<Text>().text = text;
+		GameController.Instance.m_gameResultsPanel.SetActive(true);
+	}
+
+	[Command]
+	public void CmdShowGameResultsText(string text)
+	{
+		GameController.Instance.m_gameResultsPanel.GetComponentInChildren<Text>().text = text;
+		GameController.Instance.m_gameResultsPanel.SetActive(true);
 	}
 
 	void MovePirate(Direction direction)

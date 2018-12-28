@@ -9,8 +9,10 @@ public class GameController : NetworkManager
 	public List<Pirate> m_players = new List<Pirate>();
 	public Grid m_grid;
 
-	public GameObject scorePanel;
-	public GameObject timePanel;
+	public GameObject m_scorePanel;
+	public GameObject m_timePanel;
+
+	public GameObject m_gameResultsPanel;
 
 	public Text m_hostScoreText;
 	public Text m_clientScoreText;
@@ -26,12 +28,6 @@ public class GameController : NetworkManager
 		int playersCount = NetworkServer.connections.Count;
 		if (playersCount <= startPositions.Count)
 		{
-			if (playersCount == 2)
-			{
-				SpawnChests();
-				m_timer.SetPaused(false);
-			}
-
 			GameObject player = Instantiate(
 				playerPrefab,
 				startPositions[playersCount - 1].position,
@@ -40,6 +36,13 @@ public class GameController : NetworkManager
 
 			player.GetComponent<Pirate>().CellIndex = startPositions[playersCount - 1].GetComponentInParent<GridCell>().m_index;
 			m_players.Add(player.GetComponent<Pirate>());
+
+			if (playersCount == 2)
+			{
+				SpawnChests();
+				m_players[0].RpcShowScoreAndTimePanels();
+				m_players[1].CmdShowScoreAndTimePanels();
+			}
 		}
 		else
 		{
@@ -48,9 +51,31 @@ public class GameController : NetworkManager
 		}
 	}
 
+	public override void OnStopHost()
+	{
+		Debug.Log("Host stop");
+		NetworkServer.DisconnectAll();
+	}
+
+	public override void OnStopClient()
+	{
+		Debug.Log("Client stop");
+		base.OnStopClient();
+	}
+
+	public override void OnClientDisconnect(NetworkConnection conn)
+	{
+		Debug.Log("OnClientDisconnect");
+		base.OnClientDisconnect(conn);
+		conn.Disconnect();
+	}
+
 	private void Awake()
 	{
 		Instance = this;
+		m_scorePanel.SetActive(false);
+		m_timePanel.SetActive(false);
+		m_gameResultsPanel.SetActive(false);
 	}
 
 	private void Update()
@@ -62,6 +87,21 @@ public class GameController : NetworkManager
 
 		if (m_timer.GetTime() <= Mathf.Epsilon)
 		{
+			string text = "";
+			if (m_players[0].m_nScore == m_players[1].m_nScore)
+			{
+				text = "Draw!";
+			}
+			else if (m_players[0].m_nScore < m_players[1].m_nScore)
+			{
+				text = "Client wins!";
+			}
+			else
+			{
+				text = "Host wins!";
+			}
+			m_players[0].RpcShowGameResultsText(text);
+			m_players[1].CmdShowGameResultsText(text);
 		}
 	}
 

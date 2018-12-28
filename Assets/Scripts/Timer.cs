@@ -7,7 +7,7 @@ public class Timer : MonoBehaviour
 {
 	bool m_paused;
 	float m_seconds;
-	Text m_text;
+	public Text m_text;
 
 	public void Reset()
 	{
@@ -28,26 +28,37 @@ public class Timer : MonoBehaviour
 
 	void Start()
 	{
-		m_text = GetComponent<Text>();
 		Reset();
 	}
 
 	void Update()
 	{
-		Debug.Log(m_seconds);
 		if (m_paused)
 		{
 			return;
 		}
 
-		if (m_seconds > 0.0f)
+		Debug.Log("sdasdasdasd");
+		//if (m_seconds > 0.0f)
+		//{
+		//	m_seconds -= Time.deltaTime;
+		//}
+		//else
+		//{
+		//	m_seconds = 0.0f;
+		//}
+		// m_text.text = string.Format("{0:D2}:{1:D2}", (int)(m_seconds / 60), (int)(m_seconds % 60));
+		// UpdateTimerColor();
+	}
+
+	public void SetTime(float time)
+	{
+		if (time <= 0)
 		{
-			m_seconds -= Time.deltaTime;
+			time = 0;
 		}
-		else
-		{
-			m_seconds = 0.0f;
-		}
+
+		m_seconds = time;
 		m_text.text = string.Format("{0:D2}:{1:D2}", (int)(m_seconds / 60), (int)(m_seconds % 60));
 		UpdateTimerColor();
 	}
