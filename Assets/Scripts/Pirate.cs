@@ -276,9 +276,20 @@ public class Pirate : NetworkBehaviour
 			transform.position = Vector3.Lerp(transform.position, m_destination, m_speed * Time.deltaTime);
 			if (Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(m_destination.x, m_destination.z)) <= 0.6f)
 			{
+				if (isServer)
+				{
+					Debug.Log("host stop anim");
+					// if (m_moving) CmdSetAnimationTrigger();
+					StartCoroutine(WaitSetAnimationTrigger());
+				}
+				else
+				{
+					Debug.Log("client stop anim");
+					if (m_moving) CmdSetAnimationTrigger();
+				}
+
 				m_moving = false;
 				m_destination = Vector3.zero;
-				m_animator.SetTrigger("Trigger");
 
 				m_questionsPanel.SetActive(true);
 				m_answers.SetActive(true);
@@ -329,7 +340,19 @@ public class Pirate : NetworkBehaviour
 
 		// Можно просто мнгновенно менять позицию персонажа:
 		//  transform.position = new Vector3(pos.x, transform.position.y, pos.x);
-		m_animator.SetTrigger("Trigger");
+
+		if (isServer)
+		{
+			Debug.Log("host start anim");
+			if (!m_moving) CmdSetAnimationTrigger();
+		}
+		else
+		{
+			Debug.Log("client start anim");
+			if (!m_moving) CmdSetAnimationTrigger();
+		}
+
+		// m_animator.SetTrigger("Trigger");
 		m_destination = new Vector3(pos.x, transform.position.y, pos.z);
 		m_moving = true;
 	}
@@ -421,6 +444,24 @@ public class Pirate : NetworkBehaviour
 	{
 		GameController.Instance.m_gameResultsPanel.GetComponentInChildren<Text>().text = text;
 		GameController.Instance.m_gameResultsPanel.SetActive(true);
+	}
+
+	[ClientRpc]
+	public void RpcSetAnimationTrigger()
+	{
+		m_animator.SetTrigger("Trigger");
+	}
+
+	[Client]
+	public void CmdSetAnimationTrigger()
+	{
+		m_animator.SetTrigger("Trigger");
+	}
+
+	public IEnumerator WaitSetAnimationTrigger() {
+		yield return new WaitForSeconds(1.5f);
+		Debug.Log("Stop wait animation");
+		m_animator.SetTrigger("Trigger");
 	}
 
 	void MovePirate(Direction direction)
