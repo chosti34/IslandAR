@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : NetworkManager
 {
@@ -11,6 +12,9 @@ public class GameController : NetworkManager
 
 	public GameObject m_scorePanel;
 	public GameObject m_timePanel;
+
+	public GameObject m_networkButtonsPanel;
+	public Button m_exitButton;
 
 	public GameObject m_gameResultsPanel;
 
@@ -76,6 +80,12 @@ public class GameController : NetworkManager
 		m_scorePanel.SetActive(false);
 		m_timePanel.SetActive(false);
 		m_gameResultsPanel.SetActive(false);
+		m_exitButton.gameObject.SetActive(false);
+	}
+
+	void Start()
+	{
+		hostNameInput.text = NetworkManager.singleton.networkAddress;
 	}
 
 	private void Update()
@@ -85,6 +95,7 @@ public class GameController : NetworkManager
 			return;
 		}
 
+		// TODO: once flag
 		if (m_timer.GetTime() <= Mathf.Epsilon)
 		{
 			string text = "";
@@ -124,5 +135,42 @@ public class GameController : NetworkManager
 			chest.SetCellIndex(index);
 			NetworkServer.Spawn(chest.gameObject);
 		}
+	}
+
+	// custom network hud control
+	public UnityEngine.UI.Text hostNameInput;
+
+	public void StartLocalGame()
+	{
+		StartHost();
+		m_networkButtonsPanel.SetActive(false);
+		m_exitButton.gameObject.SetActive(true);
+	}
+
+	public void JoinLocalGame()
+	{
+		if (hostNameInput.text != "Hostname")
+		{
+			networkAddress = hostNameInput.text;
+		}
+		StartClient();
+		m_networkButtonsPanel.SetActive(false);
+		m_exitButton.gameObject.SetActive(true);
+	}
+
+	public void ExitGame()
+	{
+		if (NetworkServer.active)
+		{
+			StopServer();
+		}
+		if (NetworkClient.active)
+		{
+			StopClient();
+		}
+		m_players.Clear();
+		m_networkButtonsPanel.SetActive(true);
+		m_exitButton.gameObject.SetActive(false);
+		Application.Quit();
 	}
 }
