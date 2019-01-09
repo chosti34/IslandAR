@@ -1811,8 +1811,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 8300000, guid: 608466c431f3942edb31b5d4ffb31068, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -2064,10 +2064,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e00343d865e4d718aa67eaa334e62d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_cellIndex: 0
   m_speed: 5
+  m_run: 0
+  m_nScore: 0
   m_answers: {fileID: 1733746248799702}
   m_answersRotationIdentity: {x: 0, y: 0, z: 0, w: 0}
   m_clip: {fileID: 8300000, guid: 86dd2eb46609b4702bbce63ed71fa40a, type: 3}
+  m_winningSound: {fileID: 8300000, guid: 608466c431f3942edb31b5d4ffb31068, type: 3}
 --- !u!114 &114176641956476720
 MonoBehaviour:
   m_ObjectHideFlags: 1

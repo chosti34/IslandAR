@@ -38,7 +38,6 @@ public class Timer : MonoBehaviour
 			return;
 		}
 
-		Debug.Log("sdasdasdasd");
 		//if (m_seconds > 0.0f)
 		//{
 		//	m_seconds -= Time.deltaTime;

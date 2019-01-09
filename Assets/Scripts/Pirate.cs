@@ -49,21 +49,7 @@ public class Pirate : NetworkBehaviour
 	private NetworkAnimator m_animator;
 
 	[SyncVar]
-	private int m_cellIndex;
-	public int CellIndex
-	{
-		get
-		{
-			return m_cellIndex;
-		}
-		set
-		{
-			if (m_cellIndex != value)
-			{
-				m_cellIndex = value;
-			}
-		}
-	}
+	public int m_cellIndex;
 
 	[SerializeField]
 	private float m_speed;
@@ -99,6 +85,7 @@ public class Pirate : NetworkBehaviour
 	private Button[] m_buttons;
 
 	public AudioClip m_clip;
+	public AudioClip m_winningSound;
 
 	private void Awake()
 	{
@@ -137,18 +124,38 @@ public class Pirate : NetworkBehaviour
 		m_animator = GetComponent<NetworkAnimator>();
 		m_moving = false;
 
-		m_questionsAndAnswers = new QuestionAndAnswer[10]
+		m_questionsAndAnswers = new QuestionAndAnswer[30]
 		{
-			new QuestionAndAnswer("1 + 3 = ?", "4"),
-			new QuestionAndAnswer("1 - 3 = ?", "-2"),
-			new QuestionAndAnswer("10 + 1 = ?", "11"),
-			new QuestionAndAnswer("3 * 8 = ?", "24"),
-			new QuestionAndAnswer("8 / 4 = ?", "2"),
-			new QuestionAndAnswer("98 - 27 = ?", "71"),
-			new QuestionAndAnswer("1 + 4 = ?", "5"),
-			new QuestionAndAnswer("10 - 11 = ?", "-1"),
-			new QuestionAndAnswer("10 * 3 = ?", "30"),
-			new QuestionAndAnswer("7 + 7 = ?", "14")
+			new QuestionAndAnswer("18 - 17 = ?", "1"),
+			new QuestionAndAnswer("10 - 8 = ?", "2"),
+			new QuestionAndAnswer("13 - 10 = ?", "3"),
+			new QuestionAndAnswer("12 - 8 = ?", "4"),
+			new QuestionAndAnswer("16 - 11 = ?", "5"),
+			new QuestionAndAnswer("2 + 4 = ?", "6"),
+			new QuestionAndAnswer("10 - 3 = ?", "7"),
+			new QuestionAndAnswer("3 + 4 = ?", "8"),
+			new QuestionAndAnswer("14 - 5 = ?", "9"),
+			new QuestionAndAnswer("20 - 10 = ?", "10"),
+			new QuestionAndAnswer("23 - 12 = ?", "11"),
+			new QuestionAndAnswer("25 - 13 = ?", "12"),
+			new QuestionAndAnswer("30 - 17 = ?", "13"),
+			new QuestionAndAnswer("18 - 4 = ?", "14"),
+			new QuestionAndAnswer("7 + 8 = ?", "15"),
+			new QuestionAndAnswer("8 + 8 = ?", "16"),
+			new QuestionAndAnswer("10 + 7 = ?", "17"),
+			new QuestionAndAnswer("6 + 12 = ?", "18"),
+			new QuestionAndAnswer("9 + 10 = ?", "19"),
+			new QuestionAndAnswer("17 + 3 = ?", "20"),
+			new QuestionAndAnswer("1 + 20 = ?", "21"),
+			new QuestionAndAnswer("18 + 4 = ?", "22"),
+			new QuestionAndAnswer("11 + 12 = ?", "23"),
+			new QuestionAndAnswer("10 + 14 = ?", "24"),
+			new QuestionAndAnswer("15 + 10 = ?", "25"),
+			new QuestionAndAnswer("30 - 4 = ?", "26"),
+			new QuestionAndAnswer("18 + 9 = ?", "27"),
+			new QuestionAndAnswer("30 - 2 = ?", "28"),
+			new QuestionAndAnswer("10 + 19 = ?", "29"),
+			new QuestionAndAnswer("14 + 16 = ?", "30")
 		};
 		m_directionMap = new Dictionary<int, Direction>();
 
@@ -458,6 +465,42 @@ public class Pirate : NetworkBehaviour
 		m_animator.SetTrigger("Trigger");
 	}
 
+	[ClientRpc]
+	public void RpcSetCellIndex(int index)
+	{
+		m_cellIndex = index;
+	}
+
+	[Command]
+	public void CmdSetCellIndex(int index)
+	{
+		m_cellIndex = index;
+	}
+
+	[ClientRpc]
+	public void RpcUpdateAnswersAvailability()
+	{
+		UpdateAnswersAndQuestionsAvailability();
+	}
+
+	[Command]
+	public void CmdUpdateAnswersAvailability()
+	{
+		UpdateAnswersAndQuestionsAvailability();
+	}
+
+	[ClientRpc]
+	public void RpcPlayWinningSound()
+	{
+		GetComponent<AudioSource>().Play();
+	}
+
+	[Command]
+	public void CmdPlayWinningSound()
+	{
+		GetComponent<AudioSource>().Play();
+	}
+
 	public IEnumerator WaitSetAnimationTrigger() {
 		yield return new WaitForSeconds(1.5f);
 		Debug.Log("Stop wait animation");
@@ -474,19 +517,19 @@ public class Pirate : NetworkBehaviour
 		switch (direction)
 		{
 			case Direction.Up:
-				index = GameController.Instance.m_grid.GetUpperCellIndex(CellIndex);
+				index = GameController.Instance.m_grid.GetUpperCellIndex(m_cellIndex);
 				rotation = Quaternion.Euler(new Vector3(0, 0, 0));
 				break;
 			case Direction.Right:
-				index = GameController.Instance.m_grid.GetRightCellIndex(CellIndex);
+				index = GameController.Instance.m_grid.GetRightCellIndex(m_cellIndex);
 				rotation = Quaternion.Euler(new Vector3(0, 90, 0));
 				break;
 			case Direction.Down:
-				index = GameController.Instance.m_grid.GetDownCellIndex(CellIndex);
+				index = GameController.Instance.m_grid.GetDownCellIndex(m_cellIndex);
 				rotation = Quaternion.Euler(new Vector3(0, 180, 0));
 				break;
 			case Direction.Left:
-				index = GameController.Instance.m_grid.GetLeftCellIndex(CellIndex);
+				index = GameController.Instance.m_grid.GetLeftCellIndex(m_cellIndex);
 				rotation = Quaternion.Euler(new Vector3(0, 270, 0));
 				break;
 		}
@@ -495,7 +538,8 @@ public class Pirate : NetworkBehaviour
 		{
 			GridCell cell = GameController.Instance.m_grid.GetCell(index);
 			CmdMoveTo(cell.transform.position);
-			CellIndex = index;
+			if (isServer) RpcSetCellIndex(index);
+			else CmdSetCellIndex(index);
 			transform.rotation = rotation;
 			m_answers.SetActive(false);
 			m_questionsPanel.SetActive(false);
@@ -542,20 +586,19 @@ public class Pirate : NetworkBehaviour
 			answersText[ToDirectionIndex(m_directionMap[i])].text = questionAndAnswer.answer;
 		}
 
-		int upper = GameController.Instance.m_grid.GetUpperCellIndex(CellIndex);
-		int right = GameController.Instance.m_grid.GetRightCellIndex(CellIndex);
-		int down = GameController.Instance.m_grid.GetDownCellIndex(CellIndex);
-		int left = GameController.Instance.m_grid.GetLeftCellIndex(CellIndex);
+		int upper = GameController.Instance.m_grid.GetUpperCellIndex(m_cellIndex);
+		int right = GameController.Instance.m_grid.GetRightCellIndex(m_cellIndex);
+		int down = GameController.Instance.m_grid.GetDownCellIndex(m_cellIndex);
+		int left = GameController.Instance.m_grid.GetLeftCellIndex(m_cellIndex);
 
-		GameController instance = GameController.Instance;
-		if (instance.m_players.Count == 2)
+		GameController controller = GameController.Instance;
+		if (controller.m_players.Count == 2)
 		{
-			Pirate otherPirate = instance.m_players[1].playerControllerId == playerControllerId ? instance.m_players[1] : instance.m_players[0];
-			if (upper == otherPirate.CellIndex) upper = Grid.NON_REACHABLE_CELL;
-			if (right == otherPirate.CellIndex) right = Grid.NON_REACHABLE_CELL;
-			if (down == otherPirate.CellIndex) down = Grid.NON_REACHABLE_CELL;
-			if (left == otherPirate.CellIndex) left = Grid.NON_REACHABLE_CELL;
-			Debug.Log(otherPirate.CellIndex);
+			int otherPirateCellIndex = isServer ? controller.m_players[1].m_cellIndex : controller.m_players[0].m_cellIndex;
+			if (upper == otherPirateCellIndex) upper = Grid.NON_REACHABLE_CELL;
+			if (right == otherPirateCellIndex) right = Grid.NON_REACHABLE_CELL;
+			if (down == otherPirateCellIndex) down = Grid.NON_REACHABLE_CELL;
+			if (left == otherPirateCellIndex) left = Grid.NON_REACHABLE_CELL;
 		}
 
 		m_buttons[GetButtonIndexAssociatedWithDirection(Direction.Up)].interactable = upper != Grid.NON_REACHABLE_CELL;

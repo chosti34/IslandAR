@@ -34,7 +34,7 @@ public class GameController : NetworkManager
 				Quaternion.identity);
 			NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
 
-			player.GetComponent<Pirate>().CellIndex = startPositions[playersCount - 1].GetComponentInParent<GridCell>().m_index;
+			player.GetComponent<Pirate>().m_cellIndex = startPositions[playersCount - 1].GetComponentInParent<GridCell>().m_index;
 			m_players.Add(player.GetComponent<Pirate>());
 
 			if (playersCount == 2)
@@ -102,6 +102,8 @@ public class GameController : NetworkManager
 			}
 			m_players[0].RpcShowGameResultsText(text);
 			m_players[1].CmdShowGameResultsText(text);
+			m_players[0].RpcPlayWinningSound();
+			m_players[1].CmdPlayWinningSound();
 		}
 	}
 
